@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class GridSystem<TGridObject>
 {
+
     public event EventHandler<OnGridObjectChangedEventArgs> OnGridObjectChanged;
     public class OnGridObjectChangedEventArgs : EventArgs
     {
@@ -121,15 +122,12 @@ public class GridSystem<TGridObject>
         GetXY(worldPosition, out x, out y);
         return GetGridObject(x, y);
     }
-
     public const int sortingOrderDefault = 5000;
     public static TextMesh CreateWorldText(string text, Transform parent = null, Vector3 localPosition = default(Vector3), int fontSize = 40, Color? color = null, TextAnchor textAnchor = TextAnchor.UpperLeft, TextAlignment textAlignment = TextAlignment.Left, int sortingOrder = sortingOrderDefault)
     {
         if (color == null) color = Color.white;
         return CreateWorldText(parent, text, localPosition, fontSize, (Color)color, textAnchor, textAlignment, sortingOrder);
     }
-
-    // Create Text in the World
     public static TextMesh CreateWorldText(Transform parent, string text, Vector3 localPosition, int fontSize, Color color, TextAnchor textAnchor, TextAlignment textAlignment, int sortingOrder)
     {
         GameObject gameObject = new GameObject("World_Text", typeof(TextMesh));
@@ -145,5 +143,4 @@ public class GridSystem<TGridObject>
         textMesh.GetComponent<MeshRenderer>().sortingOrder = sortingOrder;
         return textMesh;
     }
-
 }

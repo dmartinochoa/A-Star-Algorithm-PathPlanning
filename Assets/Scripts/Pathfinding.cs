@@ -58,7 +58,11 @@ public class Pathfinding
             foreach(PathNode neighborNode in GetNeighbourList(currentNode))
             {
                 if (closedList.Contains(neighborNode)) continue;
-
+                if (!neighborNode.isWalkable)
+                {
+                    closedList.Add(neighborNode);
+                    continue;
+                }
                 int tentativeGcost = currentNode.gCost + CalculateDistanceCost(currentNode, neighborNode);
                 if (tentativeGcost < neighborNode.gCost)
                 {
