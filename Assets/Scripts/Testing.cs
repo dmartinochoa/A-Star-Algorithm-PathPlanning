@@ -7,11 +7,11 @@ public class Testing : MonoBehaviour
 {
 
     [SerializeField] private PathfindingVisual pathfindingVisual;
-    //[SerializeField] private CharacterPathfindingMovementHandler characterPathfinding;
     private Pathfinding pathfinding;
     public GameObject player;
 
     public float speed = 1f;
+
     private void Start()
     {
         player = GameObject.Find("Player"); ;
@@ -37,7 +37,7 @@ public class Testing : MonoBehaviour
                     Debug.DrawLine(new Vector3(path[i].x, path[i].y) * 10f + Vector3.one * 5f, new Vector3(path[i + 1].x, path[i + 1].y) * 10f + Vector3.one * 5f, Color.green, 50f);
                     Vector3 newPos = new Vector3(path[i+1].x, path[i+1].y) * 10f + Vector3.one * 5f;
                     Debug.Log("Current pos: " + player.transform.position + " --- Moving to pos:" + newPos);
-                    Vector3 movePos = Vector3.Lerp(player.transform.position, newPos, speed * Time.deltaTime);
+                    Vector3 movePos = Vector3.MoveTowards(player.transform.position, newPos, speed * Time.deltaTime);
                     player.transform.position = newPos;
                 }
                 Debug.Log("Last pos: " + player.transform.position);
