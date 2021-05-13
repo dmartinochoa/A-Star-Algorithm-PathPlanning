@@ -1,7 +1,6 @@
-
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 
 public class Testing : MonoBehaviour
 {
@@ -9,8 +8,6 @@ public class Testing : MonoBehaviour
     [SerializeField] private PathfindingVisual pathfindingVisual;
     private Pathfinding pathfinding;
     public GameObject player;
-
-    public float speed = 1f;
 
     private void Start()
     {
@@ -25,22 +22,16 @@ public class Testing : MonoBehaviour
         {
             Debug.Log("First pos: " + player.transform.position);
             Vector3 mouseWorldPosition = GetMouseWorldPosition();
-            pathfinding.GetGrid().GetXY(mouseWorldPosition, out int x, out int y);
-
-            int[] playerXY = GetPlayerPosicion(player.transform);
+            pathfinding.GetGrid().GetXY(mouseWorldPosition, out int x, out int y); //gets the (x,y) values of the node you clicked on
+            int[] playerXY = GetPlayerPosicion(player.transform); //gets the (x,y) values of the player GameObject
             List<PathNode> path = pathfinding.FindPath(playerXY[0], playerXY[1], x, y);
-
             if (path != null)
             {
-                for (int i = 0; i < path.Count-1; i++)
-                {
-                    Debug.DrawLine(new Vector3(path[i].x, path[i].y) * 10f + Vector3.one * 5f, new Vector3(path[i + 1].x, path[i + 1].y) * 10f + Vector3.one * 5f, Color.green, 50f);
-                    Vector3 newPos = new Vector3(path[i+1].x, path[i+1].y) * 10f + Vector3.one * 5f;
-                    Debug.Log("Current pos: " + player.transform.position + " --- Moving to pos:" + newPos);
-                    Vector3 movePos = Vector3.MoveTowards(player.transform.position, newPos, speed * Time.deltaTime);
-                    player.transform.position = newPos;
-                }
-                Debug.Log("Last pos: " + player.transform.position);
+                StartCoroutine(MovePlayer(path));
+            }
+            else
+            {
+                Debug.Log("No available path?");
             }
         }
 
@@ -49,19 +40,33 @@ public class Testing : MonoBehaviour
             Vector3 mouseWorldPosition = GetMouseWorldPosition();
             pathfinding.GetGrid().GetXY(mouseWorldPosition, out int x, out int y);
             pathfinding.GetNode(x, y).SetIsWalkable(!pathfinding.GetNode(x, y).isWalkable);
-            
         }
     }
-
-    public static int[] GetPlayerPosicion(Transform transform)
+    //MovePlayer() coroutine needed to wait for MoveTowards() to finish before looping again in the for
+    IEnumerator MovePlayer(List<PathNode> path)
     {
-       Vector3 idkwhatimdoing = transform.position;
-       int x = Mathf.FloorToInt((idkwhatimdoing - Vector3.one * 5f).x / 10f); 
-       int y = Mathf.FloorToInt((idkwhatimdoing - Vector3.one * 5f).y / 10f);
-       int[] xy = {x, y};
-       return xy;
+        for (int i = 0; i < path.Count - 1; i++)
+        {
+            Debug.DrawLine(new Vector3(path[i].x, path[i].y) * 10f + Vector3.one * 5f, new Vector3(path[i + 1].x, path[i + 1].y) * 10f + Vector3.one * 5f, Color.green, 50f);
+            Vector3 newPos = new Vector3(path[i + 1].x, path[i + 1].y) * 10f + Vector3.one * 5f;
+            Debug.Log("Current pos: " + player.transform.position + " --- Moving to pos:" + newPos);
+            Vector3 movePos = Vector3.MoveTowards(player.transform.position, newPos, 1f * Time.deltaTime);
+            yield return new WaitForSeconds(0.2f);
+            player.transform.position = newPos;
+        }
+        Debug.Log("Last pos: " + player.transform.position);
     }
 
+    //-------- Helper functions that shouldnt be here --------
+    public static int[] GetPlayerPosicion(Transform transform)
+    {
+        //Mathf.FloorToInt((worldPosition - originPosition).x / cellSize); ---> 5f and 10f hardcoded values
+        Vector3 pos = transform.position;
+        int x = Mathf.FloorToInt((pos - Vector3.one * 5f).x / 10f);
+        int y = Mathf.FloorToInt((pos - Vector3.one * 5f).y / 10f);
+        int[] xy = { x, y };
+        return xy;
+    }
     public static Vector3 GetMouseWorldPosition()
     {
         Vector3 vec = GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);

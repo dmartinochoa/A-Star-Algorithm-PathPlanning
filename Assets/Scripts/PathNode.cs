@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class PathNode
 {
     private GridSystem<PathNode> grid;
@@ -15,7 +11,6 @@ public class PathNode
 
     public bool isWalkable;
     public PathNode cameFromNode;
-
 
   public PathNode(GridSystem<PathNode> grid, int x, int y)
     {

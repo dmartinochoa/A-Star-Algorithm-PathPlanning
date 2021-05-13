@@ -251,7 +251,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathfindingVisual: {fileID: 1596391178}
   player: {fileID: 183119957}
-  speed: 5
 --- !u!4 &491462447
 Transform:
   m_ObjectHideFlags: 0
